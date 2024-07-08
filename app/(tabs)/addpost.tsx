@@ -1,11 +1,12 @@
-import { View, TextInput, StyleSheet, Image, Text, Pressable } from 'react-native';
-import { getFirestore, getDocs, collection } from "firebase/firestore";
+import { View, TextInput, StyleSheet, Image, Text, Pressable, Alert, ActivityIndicator } from 'react-native';
+import { getFirestore, getDocs, collection, addDoc } from "firebase/firestore";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { app } from "../../firebaseConfig";
 import { useEffect, useState } from 'react';
 import { useForm, Controller } from "react-hook-form";
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useUser } from '@clerk/clerk-expo';
 
 interface Category {
   icon: string;
@@ -19,23 +20,64 @@ type FormData = {
   category: string
   address: string
   image: string
+  userName: string
+  userEmail: string
+  userImage: string
 }
 
 export default function Tab() {
+  const { user } = useUser();
+
   const db = getFirestore(app);
 
   const [categoryList, setCategoryList] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
     setValue,
+    resetField,
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>()
-  const onSubmit = (data: FormData) => {
-    data.image = image;
-    console.log(data)
+
+  const storage = getStorage();
+
+  const onSubmit = async (data: FormData) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(image);
+      const blob = await response.blob();
+      const storageRef = ref(storage, 'community-post/' + Date.now() + ".jpg");
+
+      uploadBytes(storageRef, blob).then((snapshot) => {
+        console.log('Uploaded a blob or file!');
+      }).then((resp) => {
+        getDownloadURL(storageRef).then(async (downloadUrl) => {
+          console.log(downloadUrl);
+          data.image = downloadUrl;
+          data.userName = user?.fullName || '';
+          data.userEmail = user?.primaryEmailAddress?.emailAddress || '';
+          data.userImage = user?.imageUrl || '';
+          console.log(data);
+          const docRef = await addDoc(collection(db, "UserPost"), data);
+          if(docRef) {
+            setIsLoading(false);
+            Alert.alert('Post Added Successfully!');
+            resetField('title');
+            resetField('desc');
+            resetField('price');
+            resetField('address');
+            resetField('category');
+            setImage('');
+          }
+        })
+      });
+    } catch (err) {
+      Alert.alert('Failed to add Post!')
+      console.log(err);
+    }
   }
 
   useEffect(() => {
@@ -99,9 +141,9 @@ export default function Tab() {
       <Text className='text-md text-gray-500 mb-5'>Create a new post and start selling!</Text>
       <View>
         <Pressable onPress={pickImage}>
-          {image ? 
-          <Image className='rounded-xl w-[200px] h-[200px] object-cover mx-16 mb-5' source={{uri:image}}/>:
-          <Image className='rounded-xl w-[200px] h-[200px] object-cover mx-16 mb-5' source={require('../../assets/images/uploadimg.jpeg')}/>}
+          {image ?
+            <Image className='rounded-xl w-[200px] h-[200px] object-cover mx-16 mb-5' source={{ uri: image }} /> :
+            <Image className='rounded-xl w-[200px] h-[200px] object-cover mx-16 mb-5' source={require('../../assets/images/uploadimg.jpeg')} />}
         </Pressable>
         <Controller
           control={control}
@@ -200,8 +242,11 @@ export default function Tab() {
         />
 
         <View className='flex w-full justify-center'>
-          <Pressable className='bg-sky-500 p-4 flex px-2 rounded-full' onPress={handleSubmit(onSubmit)}>
-            <Text className='text-white text-xl font-bold text-center'>Submit</Text>
+          <Pressable className='p-4 flex px-2 rounded-full' style={{backgroundColor: isLoading? '#ccc':'#0ea5e9'}} onPress={handleSubmit(onSubmit)} disabled={isLoading}>
+            {isLoading?
+            <ActivityIndicator color='white' />
+            :
+            <Text className='text-white text-xl font-bold text-center'>Submit</Text>}
           </Pressable>
         </View>
       </View>
