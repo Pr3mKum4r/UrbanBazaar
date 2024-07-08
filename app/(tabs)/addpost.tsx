@@ -1,4 +1,4 @@
-import { View, TextInput, StyleSheet, Image, Text, Pressable, Alert, ActivityIndicator } from 'react-native';
+import { View, TextInput, StyleSheet, Image, Text, Pressable, Alert, ActivityIndicator, KeyboardAvoidingView, ScrollView } from 'react-native';
 import { getFirestore, getDocs, collection, addDoc } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { app } from "../../firebaseConfig";
@@ -23,6 +23,7 @@ type FormData = {
   userName: string
   userEmail: string
   userImage: string
+  createdAt: Number
 }
 
 export default function Tab() {
@@ -60,6 +61,7 @@ export default function Tab() {
           data.userName = user?.fullName || '';
           data.userEmail = user?.primaryEmailAddress?.emailAddress || '';
           data.userImage = user?.imageUrl || '';
+          data.createdAt = Date.now();
           console.log(data);
           const docRef = await addDoc(collection(db, "UserPost"), data);
           if(docRef) {
@@ -104,14 +106,6 @@ export default function Tab() {
       });
 
       setCategoryList(categories);
-
-      // querySnapshot.forEach((doc) => {
-      //   console.log("Docs: ", doc.data());
-      //   setCategoryList((prevCategoryList) => [
-      //     ...prevCategoryList,
-      //     doc.data() as Category,
-      //   ]);
-      // })
     } catch (err) {
       console.log(err);
     }
@@ -136,7 +130,8 @@ export default function Tab() {
   };
 
   return (
-    <View className='p-10 bg-white'>
+    <KeyboardAvoidingView>
+    <ScrollView className='p-10 bg-white'>
       <Text className='font-bold text-3xl mt-5'>Add New Post</Text>
       <Text className='text-md text-gray-500 mb-5'>Create a new post and start selling!</Text>
       <View>
@@ -250,7 +245,8 @@ export default function Tab() {
           </Pressable>
         </View>
       </View>
-    </View>
+    </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
