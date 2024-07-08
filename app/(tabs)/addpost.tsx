@@ -7,6 +7,7 @@ import { useForm, Controller } from "react-hook-form";
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useUser } from '@clerk/clerk-expo';
+import moment from 'moment';
 
 interface Category {
   icon: string;
@@ -23,7 +24,7 @@ type FormData = {
   userName: string
   userEmail: string
   userImage: string
-  createdAt: Number
+  createdAt: String
 }
 
 export default function Tab() {
@@ -61,7 +62,7 @@ export default function Tab() {
           data.userName = user?.fullName || '';
           data.userEmail = user?.primaryEmailAddress?.emailAddress || '';
           data.userImage = user?.imageUrl || '';
-          data.createdAt = Date.now();
+          data.createdAt = moment().format('Do MMMM YYYY, h:mm:ss a');
           console.log(data);
           const docRef = await addDoc(collection(db, "UserPost"), data);
           if(docRef) {

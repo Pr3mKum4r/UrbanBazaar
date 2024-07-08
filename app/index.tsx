@@ -70,7 +70,8 @@ export default function HomeScreen() {
         // Use signIn or signUp for next steps such as MFA
       }
     } catch (err) {
-      console.log("OAuth error", err);
+      // console.error("OAuth error", err);
+      console.error(JSON.stringify(err, null, 2));
     }
   }, []);
 

@@ -1,7 +1,7 @@
 import Header from '@/components/HomeScreen/Header';
 import Slider from '@/components/HomeScreen/Slider';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { collection, getDocs, getFirestore, query } from 'firebase/firestore'
+import { collection, getDocs, getFirestore, orderBy, query } from 'firebase/firestore'
 import { app } from '@/firebaseConfig'
 import { useEffect, useState } from 'react';
 import Categories from '@/components/HomeScreen/Categories';
@@ -26,7 +26,7 @@ type ItemList = {
   userName: string
   userEmail: string
   userImage: string
-  createdAt: Number
+  createdAt: string
 }
 
 export default function Tab() {
@@ -79,7 +79,7 @@ export default function Tab() {
 
   const getLatestItemList = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, 'UserPost'));
+      const querySnapshot = await getDocs(query(collection(db, 'UserPost'), orderBy("createdAt", "desc")));
       
       const items: ItemList[] = [];
 
