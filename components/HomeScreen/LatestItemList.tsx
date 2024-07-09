@@ -17,12 +17,13 @@ type ItemList = {
 
 interface LatestItemListProps {
     latestItemList: ItemList[];
+    heading: string
 }
 
-export default function LatestItemList({latestItemList}: LatestItemListProps) {
+export default function LatestItemList({latestItemList, heading}: LatestItemListProps) {
   return (
     <View className='mt-4'>
-        <Text className='font-bold text-[20px]'>Latest Items</Text>
+        <Text className='ml-2 font-bold text-[20px]'>{heading}</Text>
         <FlatList
         data = {latestItemList}
         numColumns={2}

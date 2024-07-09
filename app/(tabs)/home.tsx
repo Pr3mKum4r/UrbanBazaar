@@ -99,7 +99,7 @@ export default function Tab() {
       <Header />
       <Slider sliderList={sliderList} />
       <Categories categoryList={categoryList} />
-      <LatestItemList latestItemList={latestItemList}/>
+      <LatestItemList latestItemList={latestItemList} heading={'Latest Items'}/>
       <View className='h-20'></View> 
     </ScrollView>
   );

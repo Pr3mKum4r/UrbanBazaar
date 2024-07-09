@@ -162,7 +162,6 @@ export default function Tab() {
         <Controller
           control={control}
           rules={{
-            maxLength: 100,
             required: true
           }}
           render={({ field: { onChange, onBlur, value } }) => (

@@ -1,5 +1,6 @@
 import { View, Text, Pressable, Image } from 'react-native'
 import React from 'react'
+import { useNavigation } from 'expo-router'
 
 type ItemList = {
     title: string
@@ -19,8 +20,14 @@ interface ItemListProp {
 }
 
 export default function Item({item}: ItemListProp) {
+  type Nav = {
+    navigate: (value: string, object: object) => void;
+  }
+  
+  const { navigate } = useNavigation<Nav>();
+
   return (
-    <Pressable className='flex-1 m-2 rounded-lg border-2 px-1 py-2 border-slate-200'>
+    <Pressable onPress={()=>navigate('ProductDetail', {product: item})} className='flex-1 m-2 rounded-lg border-2 px-1 py-2 border-slate-200'>
                 <Image source={{uri: item?.image}} className="h-[140px] w-full rounded-lg" />
                 <View className='px-2 gap-1'>
                      <Text className='text-[15px] font-bold mt-2'>{item?.title}</Text>
