@@ -43,6 +43,7 @@ export default function RootLayout() {
             <Stack.Screen name="index" options={{ headerShown: false }} />
             <Stack.Screen name='ItemList' options={{ headerShown: false }} />
             <Stack.Screen name='ProductDetail' options={{ headerShown: false }} />
+            <Stack.Screen name='MyProducts' options={{ headerShown: false }} />
           </Stack>
         </ThemeProvider>
       </ClerkLoaded>
