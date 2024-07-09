@@ -1,4 +1,4 @@
-import { useUser } from '@clerk/clerk-expo';
+import { useAuth, useUser } from '@clerk/clerk-expo';
 import { useNavigation } from 'expo-router';
 import { View, Text, Image, FlatList, Pressable } from 'react-native';
 
@@ -30,8 +30,9 @@ export default function Tab() {
   type Nav = {
     navigate: (value: string, object: object) => void;
   }
-  
+
   const { navigate } = useNavigation<Nav>();
+  const { signOut } = useAuth();
 
   return (
     <View className='px-5 pb-5 bg-white flex-1'>
@@ -43,10 +44,17 @@ export default function Tab() {
       <FlatList
         data={menuList}
         numColumns={3}
-        style={{marginTop: 20}}
+        style={{ marginTop: 20 }}
         renderItem={({ item, index }) => (
-          <Pressable onPress={()=>navigate(item?.path, {})} style={{borderColor:'#34a2eb'}} className='flex-1 mr-2 ml-2 py-5 px-2 border-[1px] border-sky-500 items-center m-4 rounded-lg bg-blue-50'>
-            {item && <Image source={{uri: item?.icon}} style={{ width: 50, height: 50 }}  />}
+          <Pressable onPress={() => {
+            if (item.name == 'Logout') {
+              signOut();
+              navigate('index', {});
+              return;
+            }
+            navigate(item?.path, {});
+          }} style={{ borderColor: '#34a2eb' }} className='flex-1 mr-2 ml-2 py-5 px-2 border-[1px] border-sky-500 items-center m-4 rounded-lg bg-blue-50'>
+            {item && <Image source={{ uri: item?.icon }} style={{ width: 50, height: 50 }} />}
             {item && <Text>{item?.name}</Text>}
           </Pressable>
         )} />

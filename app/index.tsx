@@ -85,6 +85,9 @@ export default function HomeScreen() {
             <Text className='text-white text-center text-[18px]'>Get Started</Text>
           </Pressable>
         </View>
+        <View style={{marginTop: 160}}>
+          <Text className="text-center font-bold text-md">Made with ❤️ by Prem Kumar Singh</Text>
+        </View>
       </View>
   )
 }

@@ -4,6 +4,7 @@ import { collection, getDocs, getFirestore, query, where } from 'firebase/firest
 import { app } from '@/firebaseConfig'
 import { useUser } from '@clerk/clerk-expo';
 import LatestItemList from '@/components/HomeScreen/LatestItemList';
+import { useNavigation } from 'expo-router';
 
 type ItemList = {
     title: string
@@ -25,9 +26,17 @@ export default function MyProducts() {
 
     const [productList, setProductList] = useState<ItemList[]>([]);
 
+    const {addListener, isFocused} = useNavigation();
+
     useEffect(() => {
         user && getUserPost();
     }, []);
+
+    useEffect(()=>{
+        addListener('focus',()=>{
+            user && getUserPost();
+        })
+    },[isFocused]);
 
     const getUserPost = async () => {
         try {
