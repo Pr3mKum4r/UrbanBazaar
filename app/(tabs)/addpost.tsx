@@ -168,6 +168,7 @@ export default function Tab() {
             <TextInput
               placeholder="Description"
               numberOfLines={5}
+              multiline={true}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}

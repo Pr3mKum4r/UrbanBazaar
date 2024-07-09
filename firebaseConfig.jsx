@@ -5,12 +5,12 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyC4J4c69RL4VrGuMxb6A5QVt5DtcBCVgJU",
-  authDomain: "urbanbazaar-65c7f.firebaseapp.com",
-  projectId: "urbanbazaar-65c7f",
-  storageBucket: "urbanbazaar-65c7f.appspot.com",
-  messagingSenderId: "268302893908",
-  appId: "1:268302893908:web:06edd0422bc1dc64693ec1"
+  apiKey: process.env.EXPO_PUBLIC_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_MESSAGE_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_APP_ID
 };
 
 // Initialize Firebase
